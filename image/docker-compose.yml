@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  nginx-alpine:
+    image: vikash-kothary/nginx:11.10.4-alpine
+    build:
+      dockerfile: Dockerfile

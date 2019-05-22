@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: vikash-kothary/nginx:1.15.12-alpine
+    container_name: nginx_reverse_proxy
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      - ENV=production
+      - APPLICATION_URL=${APPLICATION_URL}
+    volumes:
+      - ./srv/nginx/reverse_proxy/nginx.conf:/etc/nginx.conf:rw
+      - nginx-certificates/:/etc/letsencrypt/:rw
+    networks:
+      - nginx-network
+    restart: always
+    stdin_open: true
+    tty: true
+
+  web-server:
+    image: vikash-kothary/nginx:1.15.12-alpine
+    container_name: nginx_web_server
+    expose:
+      - '80'
+    environment:
+      - GITLAB_OMNIBUS_CONFIG
+    volumes:
+      - ./srv/nginx/web_server/nginx.conf:/etc/nginx.conf:rw
+    networks:
+      - nginx-network
+    restart: always
+    stdin_open: true
+    tty: true
+
+networks:
+  nginx-network:
+
+volumes:
+  nginx-certificates:
